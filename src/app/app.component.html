@@ -1,2 +1,20 @@
-<h1>User: {{user}}</h1>
-<div *ngFor="messages$ |async"></div>
+<label for="user">Username:</label>
+<input id="user" type="text" [(ngModel)]="user">
+
+<br>
+<br>
+
+<label for="message">Message:</label>
+<input id="message" type="text" [(ngModel)]="message">
+<button (click)="create()">Send</button>
+
+<br>
+
+<ul>
+  <li *ngFor="let item of messages">
+    <div>
+      From: {{item.payload.doc.data().user}}: {{item.payload.doc.data().message}}
+      <a href="#" (click)="delete(item.payload.doc.id)" >x</a>
+    </div>
+  </li>
+</ul>

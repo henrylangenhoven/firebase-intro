@@ -1,29 +1,47 @@
-import {Component} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   user: string;
-  messages$: Observable<string>;
+  message: string;
 
-  setUser() {
+  messages: Array<any> = [];
+
+  constructor(private angularFirestore: AngularFirestore) {
+  }
+
+  ngOnInit(): void {
+    this.read().subscribe(
+      (result) => {
+        this.messages = result;
+        console.log(result);
+      }
+    )
   }
 
   create() {
+    this.angularFirestore.collection('messages').add({
+      user: this.user,
+      message: this.message
+    });
   }
 
   read() {
+    return this.angularFirestore.collection('messages').snapshotChanges();
   }
 
-  update() {
+  update(id, value) {
+    this.angularFirestore.collection('users').doc(id).set(value)
   }
 
-  delete() {
+  delete(id) {
+    this.angularFirestore.collection('messages').doc(id).delete();
   }
 
-  storage(){}
+
 }
